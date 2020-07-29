@@ -21,6 +21,8 @@ using WpfApp1.Animation;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Animation;
 using WpfApp1.czUserControl.Logic;
+using System.IO;
+using System.Windows.Interop;
 
 namespace WpfApp1
 {
@@ -99,18 +101,20 @@ namespace WpfApp1
 
         private void Leftbtn_Click(object sender, RoutedEventArgs e)
         {
-            switch(_vmcalendar.CalendarType)
+            
+            switch (_vmcalendar.CalendarType)
             {
                 case EDateType.Days:
-                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.AddMonths(-1);
+                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.addMonthsExtend(-1);
                     break;
                 case EDateType.Month:
-                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.AddYears(-1);
+                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.addYearsExtend(-1);
                     break;
                 case EDateType.Year:
-                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.AddYears(-10);
+                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.addYearsExtend(-10);
                     break;
             }
+            this.gbBak.Visibility = Visibility.Visible;
         }
 
         private void Rightbtn_Click(object sender, RoutedEventArgs e)
@@ -118,15 +122,32 @@ namespace WpfApp1
             switch (_vmcalendar.CalendarType)
             {
                 case EDateType.Days:
-                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.AddMonths(1);
+                    //{
+                    //    FileStream fs = new FileStream("F:\\2323.png", FileMode.Create);
+                    //    RenderTargetBitmap bmp = new RenderTargetBitmap((int)lstboxDays.ActualWidth, (int)lstboxDays.ActualHeight, 96d, 96d, PixelFormats.Default);
+                    //    bmp.Render(lstboxDays);
+                    //    BitmapEncoder encoder = new PngBitmapEncoder();
+                    //    encoder.Frames.Add(BitmapFrame.Create(bmp));
+                    //    encoder.Save(fs);
+                    //    fs.Close();
+                    //    bmp.Clear();
+                    //    fs.Dispose();
+                    //}
+                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.addMonthsExtend(1);
                     break;
                 case EDateType.Month:
-                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.AddYears(1);
+                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.addYearsExtend(1);
                     break;
                 case EDateType.Year:
-                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.AddYears(10);
+                    _vmcalendar.ShowingDate = _vmcalendar.ShowingDate.addYearsExtend(10);
                     break;
             }
+            this.gbBak.Visibility = Visibility.Visible;
+        }
+
+        private void DoubleAnimation_Completed(object sender, EventArgs e)
+        {
+            this.gbBak.Visibility = Visibility.Hidden;
         }
     }
 }

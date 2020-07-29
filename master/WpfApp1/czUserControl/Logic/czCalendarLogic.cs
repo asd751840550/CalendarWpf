@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,7 +11,7 @@ using WpfApp1.PubFunc;
 
 namespace WpfApp1.czUserControl.Logic
 {
-    class czCalendarLogic
+    static class czCalendarLogic
     {
         public static void AddBGAnimation(FrameworkElement control, object source, string path, Color blacksrc)
         {
@@ -22,6 +23,69 @@ namespace WpfApp1.czUserControl.Logic
             control.Style = newstyle;
         }
 
+        public static DateTime addYearsExtend(this DateTime date, int year)
+        {
+            DateTime ret = DateTime.MinValue;
+            try
+            {
+                ret = date.AddYears(year);
+            }
+            catch(Exception ex)
+            {
+                if(year > 0)
+                {
+                    ret = DateTime.MaxValue;
+                }
+                else if(year < 0)
+                {
+                    ret = DateTime.MinValue;
+                }
+            }
+            
+            return ret;
+        }
+
+        public static DateTime addDaysExtend(this DateTime date, int day)
+        {
+            DateTime ret = DateTime.MinValue;
+            try
+            {
+                ret = date.AddDays(day);
+            }
+            catch (Exception ex)
+            {
+                if (day > 0)
+                {
+                    ret = DateTime.MaxValue;
+                }
+                else if (day < 0)
+                {
+                    ret = DateTime.MinValue;
+                }
+            }
+            return ret;
+        }
+
+        public static DateTime addMonthsExtend(this DateTime date, int month)
+        {
+            DateTime ret = DateTime.MinValue;
+            try
+            {
+                ret = date.AddMonths(month);
+            }
+            catch (Exception ex)
+            {
+                if (month > 0)
+                {
+                    ret = DateTime.MaxValue;
+                }
+                else if (month < 0)
+                {
+                    ret = DateTime.MinValue;
+                }
+            }
+            return ret;
+        }
         //public static void AddOpacityAnimation(FrameworkElement control, object source, string path, double[] opacitysrc, object[] value)
         //{
         //    Style newstyle = new Style(control.GetType());

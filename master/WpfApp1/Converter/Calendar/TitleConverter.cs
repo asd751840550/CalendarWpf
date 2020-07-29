@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using WpfApp1.czUserControl.Logic;
 using WpfApp1.ViewModel.Calendar;
 
 namespace WpfApp1.Converter.Calendar
@@ -26,8 +27,8 @@ namespace WpfApp1.Converter.Calendar
                         content = curdate.Year.ToString();
                         break;
                     case EDateType.Year:
-                        DateTime tmpdate = curdate.AddYears(-curdate.Year % 10);
-                        content = string.Format($"{tmpdate.Year} - {tmpdate.AddYears(9).Year}");
+                        DateTime tmpdate = curdate.addYearsExtend(-curdate.Year % 10);
+                        content = string.Format($"{tmpdate.Year} - {tmpdate.addYearsExtend(9).Year}");
                         break;
                 }
             }

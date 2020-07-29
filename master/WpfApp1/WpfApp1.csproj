@@ -58,8 +58,12 @@
     </ApplicationDefinition>
     <Compile Include="Animation\ColorChangedAnime.cs" />
     <Compile Include="Converter\BlackThemeConverter.cs" />
+    <Compile Include="Converter\Calendar\BakRowSpanConverter.cs" />
     <Compile Include="Converter\Calendar\ListBoxItemColorConverter.cs" />
     <Compile Include="Converter\Calendar\ListBoxItemConverter.cs" />
+    <Compile Include="Converter\Calendar\ListBoxItemOpacityConverter.cs" />
+    <Compile Include="Converter\Calendar\MovePositonConverter.cs" />
+    <Compile Include="Converter\Calendar\StoryboardTargetNameConverter.cs" />
     <Compile Include="Converter\Calendar\TitleConverter.cs" />
     <Compile Include="Converter\WhiteThemeConverter.cs" />
     <Compile Include="PubFunc\czPubFunc.cs" />

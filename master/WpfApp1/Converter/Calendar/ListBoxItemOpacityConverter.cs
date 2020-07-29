@@ -5,26 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Media;
+using WpfApp1.ViewModel.Calendar;
 
 namespace WpfApp1.Converter.Calendar
 {
-    public class czFontSizeConverter : IValueConverter
+    public class ListBoxItemOpacityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if((double)value < 4)
+            if (value is ItemType item)
             {
-                return 1;
+                return (double)item.Opacity;
             }
-            if(object.Equals(parameter, "Week"))
-            {
-                return (double)value / 4 * 2;
-            }
-            else if (object.Equals(parameter, "Day"))
-            {
-                return (double)value / 6 * 4;
-            }
-            return (double)value / 4 * 3;
+            
+            return (double)1;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

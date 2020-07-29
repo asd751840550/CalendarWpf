@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace WpfApp1.ViewModel
 {
+    /// <summary>
+    /// 基础ViewModel用于数据绑定
+    /// </summary>
     public class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

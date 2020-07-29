@@ -11,8 +11,11 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <baseconvert:WhiteThemeConverter x:Key="FontColorConverter"/>
-            <convert:czFontSizeConverter x:Key="fontsizeconverter"/>
             <baseconvert:BlackThemeConverter x:Key="ThemeConverter"/>
+            <convert:StoryboardTargetNameConverter x:Key="targetnameconverter"/>
+            <convert:MovePositonConverter x:Key="positonconverter"/>
+            <convert:czFontSizeConverter x:Key="fontsizeconverter"/>
+            <convert:BakRowSpanConverter x:Key="rowspanconverter"/>
             <convert:TitleConverter x:Key="titleconverter"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/WpfApp1;component/Animation/AnimationST.xaml"/>
@@ -22,8 +25,47 @@
     <Grid x:Name="pnlMain" Background="White">
         <Grid.RowDefinitions>
             <RowDefinition MaxHeight="60"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition MaxHeight="60"/>
+            <RowDefinition Height="9*"/>
         </Grid.RowDefinitions>
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="Button.Click" SourceName="Leftbtn">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation From="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}, Converter={StaticResource positonconverter}}" 
+                                         To="0" 
+                                         Duration="0:0:0.3" BeginTime="0"
+                                         Storyboard.TargetName="{Binding CalendarType, Mode=Default, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource targetnameconverter}}"
+                                         Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].X"/>
+                        <DoubleAnimation From="0"
+                                         To="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}, Converter={StaticResource positonconverter}, ConverterParameter=BakLeft}"
+                                         Duration="0:0:0.3" BeginTime="0"
+                                         Storyboard.TargetName="gbBak"
+                                         Storyboard.TargetProperty="(RenderTransform).X" Completed="DoubleAnimation_Completed"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="Button.Click" SourceName="Rightbtn">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation From="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}, Converter={StaticResource positonconverter}, ConverterParameter=Right}"
+                                         To="0"
+                                         Duration="0:0:0.3" BeginTime="0"
+                                         Storyboard.TargetName="{Binding CalendarType, Mode=Default, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource targetnameconverter}}"
+                                         Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].X"/>
+                        <DoubleAnimation From="0" To="0"
+                                         Duration="0:0:0.0" BeginTime="0:0:0.3"
+                                         Storyboard.TargetName="{Binding CalendarType, Mode=Default, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource targetnameconverter}}"
+                                         Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].X"/>
+                        <DoubleAnimation From="0"
+                                         To="{Binding ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}, Converter={StaticResource positonconverter}}"
+                                         Duration="0:0:0.3" BeginTime="0"
+                                         Storyboard.TargetName="gbBak"
+                                         Storyboard.TargetProperty="(RenderTransform).X"  Completed="DoubleAnimation_Completed"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Grid.Triggers>
         <Border x:Name="textTitle">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -40,11 +82,34 @@
                 <Button x:Name="CurDateText" Grid.Column="1" Background="Transparent" BorderBrush="{x:Null}" Foreground="Black" Click="CurDateText_Click" 
                         FontSize="{Binding ElementName=textTitle, Path=ActualHeight, Converter={StaticResource fontsizeconverter}, ConverterParameter=Title}"
                         FontWeight="Bold" Style="{StaticResource TitleButton}"/>
-                
-
             </Grid>
         </Border>
-        <Grid Name="gdDays" Grid.Row="1">
+        
+        <Grid Name="gbBak" Grid.Row="{Binding CalendarType, Mode=Default, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource rowspanconverter}, ConverterParameter=Row}"
+              Grid.RowSpan="{Binding CalendarType, Mode=Default, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource rowspanconverter}, ConverterParameter=RowSpan}"
+              Background="Transparent" Visibility="Hidden">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform X="0" Y="0"/>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
+                </Style>
+            </Grid.Style>
+            <ListBox x:Name="lstboxBak" BorderThickness="0" Margin="0" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent"
+                     ItemsSource="{Binding LstBakDate}"
+                     ItemContainerStyle="{StaticResource DayListBoxItem}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding CalendarType, Mode=Default, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource rowspanconverter}, ConverterParameter=UniGricol}"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+        </Grid>
+        
+        <Grid Name="gdDays" Grid.Row="1" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition MaxHeight="60"/>
                 <RowDefinition Height="9*"/>
@@ -53,21 +118,17 @@
                 <Style TargetType="Grid">
                     <Setter Property="RenderTransform">
                         <Setter.Value>
-                            <ScaleTransform ScaleX="0" ScaleY="0" />
+                            <TransformGroup>
+                                <TranslateTransform X="0" Y="0"/>
+                                <ScaleTransform ScaleX="1" ScaleY="1" />
+                            </TransformGroup>
                         </Setter.Value>
                     </Setter>
                     <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Visibility, RelativeSource={RelativeSource Mode=Self}}" Value="Visible">
                             <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="PlayAnimaiton">
-                                    <Storyboard>
-                                        <DoubleAnimation From="0.3" To="1" Duration="0:0:0.15" BeginTime="0" Storyboard.TargetProperty="(RenderTransform).ScaleY"/>
-                                        <DoubleAnimation From="0.3" To="1" Duration="0:0:0.15" BeginTime="0" Storyboard.TargetProperty="(RenderTransform).ScaleX"/>
-                                        <DoubleAnimation From="0" To="30" Duration="0:0:1.6" BeginTime="0" SpeedRatio="0.1" Storyboard.TargetProperty="Opacity"/>
-                                        <DoubleAnimation From="30" To="100" Duration="0:0:0.2" BeginTime="0:0:1.6"  SpeedRatio="0.1" Storyboard.TargetProperty="Opacity"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
+                                <BeginStoryboard x:Name="PlayAnimaiton" Storyboard="{StaticResource gridScaleAnime}"/>
                             </DataTrigger.EnterActions>
                             <DataTrigger.ExitActions>
                                 <StopStoryboard BeginStoryboardName="PlayAnimaiton"/>
@@ -98,9 +159,23 @@
                     </Grid.ColumnDefinitions>
                 </Grid>
             </Border>
-            <ListBox x:Name="lstboxDays" Grid.Row="1" BorderThickness="0" Margin="0" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent"
+            <ListBox x:Name="lstboxDays" Grid.Row="1"  RenderTransformOrigin="0.5,0.5"
+                     BorderThickness="0" Margin="0" Padding="0" 
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent"
                      ItemsSource="{Binding LstDays}"
                      ItemContainerStyle="{StaticResource DayListBoxItem}">
+                <ListBox.Style>
+                    <Style TargetType="ListBox">
+                        <Setter Property="RenderTransform">
+                            <Setter.Value>
+                                <TransformGroup>
+                                    <TranslateTransform X="0" Y="0"/>
+                                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                                </TransformGroup>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.Style>
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="7"/>
@@ -108,26 +183,23 @@
                 </ListBox.ItemsPanel>
             </ListBox>
         </Grid>
-        
-        <Grid Name="gdMonths"  Grid.Row="1">
+
+        <Grid Name="gdMonths"  Grid.Row="1" Grid.RowSpan="2">
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="RenderTransform">
                         <Setter.Value>
-                            <ScaleTransform ScaleX="0" ScaleY="0" />
+                            <TransformGroup>
+                                <TranslateTransform X="0" Y="0"/>
+                                <ScaleTransform ScaleX="1" ScaleY="1" />
+                            </TransformGroup>
                         </Setter.Value>
                     </Setter>
                     <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Visibility, RelativeSource={RelativeSource Mode=Self}}" Value="Visible">
                             <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="PlayAnimaiton">
-                                    <Storyboard>
-                                        <DoubleAnimation From="0.3" To="1" Duration="0:0:0.15" BeginTime="0" Storyboard.TargetProperty="(RenderTransform).ScaleY"/>
-                                        <DoubleAnimation From="0.3" To="1" Duration="0:0:0.15" BeginTime="0" Storyboard.TargetProperty="(RenderTransform).ScaleX"/>
-                                        <DoubleAnimation From="0" To="30" Duration="0:0:1.6" BeginTime="0" SpeedRatio="0.1" Storyboard.TargetProperty="Opacity"/>
-                                        <DoubleAnimation From="30" To="100" Duration="0:0:0.2" BeginTime="0:0:1.6"  SpeedRatio="0.1" Storyboard.TargetProperty="Opacity"/>
-                                    </Storyboard>
+                                <BeginStoryboard x:Name="PlayAnimaiton"  Storyboard="{StaticResource gridScaleAnime}">
                                 </BeginStoryboard>
                             </DataTrigger.EnterActions>
                             <DataTrigger.ExitActions>
@@ -157,25 +229,22 @@
             </ListBox>
         </Grid>
 
-        <Grid Name="gdYears" Grid.Row="1">
+        <Grid Name="gdYears" Grid.Row="1" Grid.RowSpan="2">
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="RenderTransform">
                         <Setter.Value>
-                            <ScaleTransform ScaleX="0" ScaleY="0" />
+                            <TransformGroup>
+                                <TranslateTransform X="0" Y="0"/>
+                                <ScaleTransform ScaleX="1" ScaleY="1" />
+                            </TransformGroup>
                         </Setter.Value>
                     </Setter>
                     <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Visibility, RelativeSource={RelativeSource Mode=Self}}" Value="Visible">
                             <DataTrigger.EnterActions>
-                                <BeginStoryboard x:Name="PlayAnimaiton">
-                                    <Storyboard>
-                                        <DoubleAnimation From="0.3" To="1" Duration="0:0:0.15" BeginTime="0" Storyboard.TargetProperty="(RenderTransform).ScaleY"/>
-                                        <DoubleAnimation From="0.3" To="1" Duration="0:0:0.15" BeginTime="0" Storyboard.TargetProperty="(RenderTransform).ScaleX"/>
-                                        <DoubleAnimation From="0" To="30" Duration="0:0:1" BeginTime="0" SpeedRatio="0.1" Storyboard.TargetProperty="Opacity"/>
-                                        <DoubleAnimation From="30" To="100" Duration="0:0:0.2" BeginTime="0:0:1"  SpeedRatio="0.1" Storyboard.TargetProperty="Opacity"/>
-                                    </Storyboard>
+                                <BeginStoryboard x:Name="PlayAnimaiton"  Storyboard="{StaticResource gridScaleAnime}">
                                 </BeginStoryboard>
                             </DataTrigger.EnterActions>
                             <DataTrigger.ExitActions>

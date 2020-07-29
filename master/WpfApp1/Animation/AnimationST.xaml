@@ -9,15 +9,18 @@
             <convert:ListBoxItemConverter x:Key="lstboxitemconverter"/>
             <convert:ListBoxItemColorConverter x:Key="itemcolorconverter"/>
             <convert:TitleConverter x:Key="titleconverter"/>
+            <convert:ListBoxItemOpacityConverter x:Key="opacityConverter"/>
         </ResourceDictionary>
     </ResourceDictionary.MergedDictionaries>
 
+    <!--ListBoxItem样式-->
     <Style x:Key="DayListBoxItem" TargetType="ListBoxItem">
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Grid Name="gdpnl" Margin="3" Background="{Binding Content, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBoxItem}, Converter={StaticResource itemcolorconverter}}">
+                    <Grid Name="gdpnl" Margin="3" Opacity="{Binding Content, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBoxItem}, Converter={StaticResource opacityConverter}}"
+                          Background="{Binding Content, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBoxItem}, Converter={StaticResource itemcolorconverter}}">
                         <Border Name="Bd" BorderBrush="Transparent" BorderThickness="3"  >
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -100,6 +103,12 @@
         </Style.Setters>
     </Style>
 
+    <Storyboard x:Key="gridScaleAnime">
+        <DoubleAnimation From="0.3" To="1" Duration="0:0:0.15" BeginTime="0" Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[1].ScaleY"/>
+        <DoubleAnimation From="0.3" To="1" Duration="0:0:0.15" BeginTime="0" Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[1].ScaleX"/>
+        <DoubleAnimation From="0" To="30" Duration="0:0:1.6" BeginTime="0" SpeedRatio="0.1" Storyboard.TargetProperty="Opacity"/>
+        <DoubleAnimation From="30" To="100" Duration="0:0:0.2" BeginTime="0:0:1.6"  SpeedRatio="0.1" Storyboard.TargetProperty="Opacity"/>
+    </Storyboard>
     <!--<Style TargetType="Grid">
         <Setter Property="RenderTransform">
             <Setter.Value>
