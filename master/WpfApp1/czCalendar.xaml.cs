@@ -70,7 +70,7 @@ namespace WpfApp1
             czPubFunc.SetControlBinding(Rightbtn, TextBlock.ForegroundProperty, _vmcalendar, "IsBlackTheme", new WhiteThemeConverter(), Rightbtn.Foreground);
             for (int idx = 0; idx < 7; ++idx)
             {
-                Border border = new Border() { Margin = new Thickness(1, 1, 1, 1) };
+                Border border = new Border() { Margin = new Thickness(2, 2, 2, 2) };
                 TextBlock textBlock = new TextBlock { TextAlignment = TextAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Background = null };
                 border.Child = textBlock;
                 gdWeek.Children.Add(border);

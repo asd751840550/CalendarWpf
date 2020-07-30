@@ -21,6 +21,16 @@
                 <ControlTemplate TargetType="ListBoxItem">
                     <Grid Name="gdpnl" Margin="3" Opacity="{Binding Content, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBoxItem}, Converter={StaticResource opacityConverter}}"
                           Background="{Binding Content, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBoxItem}, Converter={StaticResource itemcolorconverter}}">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="RenderTransformOrigin" Value="0.5, 0.5" />
+                            </Style>
+                        </Grid.Style>
                         <Border Name="Bd" BorderBrush="Transparent" BorderThickness="3"  >
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -47,8 +57,29 @@
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{Binding ElementName=gdpnl, Path=Background, Converter={StaticResource itemcolorconverter}, ConverterParameter=Selected}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Grid.ZIndex" Value="999"/>
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{Binding ElementName=gdpnl, Path=Background, Converter={StaticResource itemcolorconverter}, ConverterParameter=Over}"/>
                         </Trigger>
+                        <EventTrigger RoutedEvent="MouseEnter" SourceName="gdpnl">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation From="1" To="1.12" Duration="0:0:0.15" BeginTime="0" 
+                                                     Storyboard.TargetName="gdpnl" Storyboard.TargetProperty="(RenderTransform).ScaleX"/>
+                                    <DoubleAnimation From="1" To="1.12" Duration="0:0:0.15" BeginTime="0" 
+                                                     Storyboard.TargetName="gdpnl" Storyboard.TargetProperty="(RenderTransform).ScaleY"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger RoutedEvent="MouseLeave" SourceName="gdpnl">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation From="1.12" To="1" Duration="0:0:0.15" BeginTime="0" 
+                                                     Storyboard.TargetName="gdpnl" Storyboard.TargetProperty="(RenderTransform).ScaleX"/>
+                                    <DoubleAnimation From="1.12" To="1" Duration="0:0:0.15" BeginTime="0" 
+                                                     Storyboard.TargetName="gdpnl" Storyboard.TargetProperty="(RenderTransform).ScaleY"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
